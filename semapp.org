@@ -1,0 +1,301 @@
+#+TITLE: SEMAPP
+#+NIKOLA_SLUG: semapp
+#+AUTHOR: Stefan Schuh
+#+EMAIL: stefan.schuh@uni-graz.at
+#+DATE: 2019-12-09
+#+DESCRIPTION: Hilfsprogramm, das das Setzen von Items auf SEMAPP beschleunigen soll
+#+KEYWORDS: Semesterhandapparat Semapp
+#+LANGUAGE: de
+#+OPTIONS: tex:t todo:nil pri:nil tags:t texht:nil ':t ^:nil
+#+OPTIONS: author:t creator:nil email:t date:t
+#+LATEX_CLASS: koma-article
+#+LATEX_CLASS_OPTIONS: [10pt, a4paper]
+#+LATEX_HEADER: \usepackage[ngerman]{babel}
+#+LATEX_HEADER: \usepackage[a4paper,margin=2.54cm]{geometry}
+#+EXPORT_FILE_NAME: doc/doc.html
+
+* Ausgangslage und Ziel
+  Um Exemplare in den Semesterhandapparat zu stellen, werden diese auf den
+  temporären Standort "SEMAP" gestellt. Das reine umstellen des Standorts ist
+  eine repetitive Tätigkeit, die mit diesem Programm beschleunigt werden soll.
+
+*** Userinterface
+    Die Benutzerin soll es mit einem möglichst einfachen Interface zu tun haben.
+    Der Workflow ist dahingehend optimiert, dass immer mehrere Bücher zu einem
+    Semesterhandapparat in folge bearbeitet werden. Der Ablauf soll
+    folgendermaßen sein:
+
+    1. Die Benutzerin startet das Programm und bekommt eine Auswahl an
+       Handapparaten. Dazu dient die Funktion [[choose_semapp]].
+       1. Sollte der gewünschte Semesterhandapparat noch nicht verfügbar sein,
+       kann die Benutzerin einen neuen Semapp anlegen ([[create_semapp]])
+    2. Die Benutzerin gibt die laufende Nummer innerhalb des
+       Semesterhandapparates ein (die an die temporäre Signatur angehängt wird)
+       und scannt den Barcode.
+    3. Nach dem Scannen erscheint erneut ein leeres Fenster für das nächste
+       Exemplar in diesem Apparat.
+    4. Wird kein Barcode gescannt oder auf "Cancel" geklickt, wird gefragt, ob
+       ein neuer Apparat gewählt oder das Programm beendet werden soll.
+       1. Soll ein neuer Apparat gewählt werden, beginnt die Verarbeitung
+       wieder bei 1.
+       2. Soll beendet werden, wird das Programm beendet.
+
+* Script
+
+*** Imports, APIs
+***** Importe
+      #+NAME: imports
+      #+begin_src python
+        import pickle
+        from sys import argv, exit
+        import urllib.parse
+
+        import requests
+        import easygui
+
+        # config for api-key -- DO NOT PUT THIS FILE UNDER VERSION CONTROL!
+        import config.config as config
+      #+end_src
+***** API-Vorlagen und -Konfiguration
+      #+NAME: api
+      #+begin_src python
+        # get api-key from config
+        api_key = config.keys["Sandbox"]
+
+        # api-url-templates
+        base_url = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1'
+        barcode_api = base_url + "/items?item_barcode={barcode}"
+
+        session = requests.Session()
+        session.headers.update({
+            "accept": "application/json",
+            "authorization": f"apikey {api_key}",
+        })
+      #+end_src
+***** Pfad zur Liste der Apparate
+      Die Liste der Apparate wird mit =pickle= in ein Datei geschrieben. Der
+      Pfad wir mehrmals gebraucht, daher als globale Variable.
+
+      #+NAME: path-to-semapp-lst
+      #+begin_src python
+        semapps_path = "config/semapps.pickle"
+      #+end_src
+
+*** DONE create_semapp
+    CLOSED: [2019-12-09 Mo 13:02]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-12-09 Mo 13:02]
+    :END:
+    #+NAME: create_semapp
+    #+begin_src python
+      def create_semapp(semapps):
+          """Ask for new course reserve, return an updated list."""
+          semapps = semapps
+          title = "SEMAPP"
+          msg = "Bitte Namen für den neuen Semesterhandapparat eingeben!"
+          new_semapp = ""
+
+          while not new_semapp:
+              new_semapp = easygui.enterbox(msg, title).strip()
+
+              # prüfen, ob der Name mit einem Großbuchstaben beginnt. Wenn nicht,
+              # nächster Versuch
+              if new_semapp[0].islower():
+                  easygui.msgbox("Der Name des Semesterhandapparates muss mit einem Großbuchstaben beginnen.")
+                  new_semapp = ""
+                  continue
+
+              if new_semapp:
+                  if new_semapp in semapps:
+                      # Wenn ein Apparat dieses Namens schon vorhanden ist, nichts tun
+                      easygui.msgbox(f'Apparat "{new_semapp}" ist bereits vorhanden!')
+                  else:
+                      # Neuen Apparat zur Liste hinzufügen
+                      confirm_msg = f'Neuen Semesterhandapparat "{new_semapp}" anlegen?'
+                      confirmation = easygui.ccbox(confirm_msg, title)
+                      if confirmation:
+                          semapps.append(new_semapp)
+
+          # pickle the new list
+          pickle.dump(sorted(semapps), open(semapps_path, "wb"))
+          return sorted(semapps)
+    #+end_src
+
+    #+RESULTS: create_semapp
+    : None
+
+*** DONE remove_semapp
+    CLOSED: [2019-12-09 Mo 13:24]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-12-09 Mo 13:24]
+    :END:
+    #+NAME: remove_semapp
+    #+begin_src python
+      def remove_semapp(semapps):
+          semapps = semapps
+          title = "SEMAPP"
+          msg = "Welchen Handapparat möchten Sie aus der Liste ENTFERNEN?"
+          semapp_to_remove = easygui.choicebox(msg, title, semapps).strip()
+
+          confirm_msg = f'Wollen Sie wirklich den Apparat "{semapp_to_remove}" aus der Liste ENTFERNEN?'
+          confirmation = easygui.ccbox(confirm_msg, title)
+          if confirmation:
+              semapps.remove(semapp_to_remove)
+              # pickle the new list
+              pickle.dump(sorted(semapps), open(semapps_path, "wb"))
+
+          return sorted(semapps)
+    #+end_src
+
+*** DONE choose_semapp
+    CLOSED: [2019-12-09 Mo 13:24]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-12-09 Mo 13:24]
+    :END:
+    #+NAME: choose_semapp
+    #+begin_src python
+      def choose_semapp(semapps):
+          msg = "Bitte wählen Sie aus, zu welchen Semesterhandapparat Sie Exemplare hinzufügen möchten."
+          title = "SEMAPP"
+          choices = (["*** Neuen Semesterhandapparat anlegen ***"]
+                     + semapps
+                     + ["*** Einen Semesterhandapparat aus der Liste entfernen ***"])
+
+          choice = easygui.choicebox(msg, title, choices)
+
+          if choice == choices[0]:
+              choose_semapp(create_semapp(semapps))
+          elif choice == choices[-1]:
+              choose_semapp(remove_semapp(semapps))
+          else:
+              return choice
+    #+end_src
+
+***** TODO Fix bug
+      Wenn Semapps hinzugefügt oder gelöscht werden, geht es nicht weiter, wenn
+      dann tatsächlich ein Semapp zum bearbeiten gewählt wird.
+
+*** DONE get_user_input
+    CLOSED: [2019-12-09 Mo 13:24]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-12-09 Mo 13:24]
+    :END:
+    #+NAME: get_user_input
+    #+begin_src python
+      def get_user_input(semapp):
+          """Get Barcode and temporary call number from user."""
+
+          msg = f'Exemplar zu Semapp "{semapp}" hinzufügen.'
+
+          try:
+              count, barcode = easygui.multenterbox(msg=msg,
+                                                      title="SEMAPP",
+                                                      fields=["Laufende Nummer", "Barcode"])
+          except:
+              return None, None
+
+          return barcode.strip(), count.strip()
+    #+end_src
+
+***** TODO Input checken
+      Je nachdem, was gewünscht ist, könnte man noch checken, ob wirklich eine
+      Nummer bei "Laufende Nummer" eingegeben wurde.
+*** DONE move_to_semapp
+    CLOSED: [2019-12-09 Mo 13:24]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-12-09 Mo 13:24]
+    :END:
+    #+NAME: move_to_semapp
+    #+begin_src python
+      def move_to_semapp(barcode, semapp, count):
+          try:
+              item = session.get(barcode_api.format(barcode=urllib.parse.quote_plus(barcode)))
+              item.raise_for_status()
+          except requests.exceptions.HTTPError as err:
+              easygui.msgbox(msg=f"Ein Fehler ist aufgetreten. Stimmt der Barcode {barcode}?")
+              exit(1)
+
+          ij = item.json()
+          if ij["holding_data"]["in_temp_location"]:
+              easygui.msgbox(f"Exemplar {barcode} ist bereits an einem temporären Standort.")
+              return
+
+          # change the values in the item
+          ij["holding_data"]["in_temp_location"] = True
+          ij["holding_data"]["temp_library"] = {"value": "BHB", "desc": "Hauptbibliothek"}
+          ij["holding_data"]["temp_location"] = {'value': 'SEMAP', 'desc': 'Semesterhandapparat'}
+          ij["holding_data"]["temp_call_number_type"] = {'value': '8', 'desc': 'Other scheme'}
+          if count:
+              ij["holding_data"]["temp_call_number"] = semapp + f"/{count}"
+          else:
+              ij["holding_data"]["temp_call_number"] = semapp
+
+          # PUT the changed item
+          try:
+              put_res = session.put(ij["link"], json=ij)
+              put_res.raise_for_status
+          except requests.exceptions.HTTPError as err:
+              easygui.msgbox(msg=f"Ein Fehler ist aufgetreten. Bitte kontrollieren sie das Item im System!")
+              exit(1)
+    #+end_src
+
+*** DONE main
+    CLOSED: [2019-12-09 Mo 13:24]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-12-09 Mo 13:24]
+    :END:
+    #+NAME: main
+    #+begin_src python
+      def main():
+
+          # Liste der Semapps holen, oder wenn leer, anlegen
+          try:
+              semapps = pickle.load(open(semapps_path, "rb"))
+          except FileNotFoundError:
+              semapps = create_semapp([])
+
+          # die Benutzerin nach dem Semapp fragen
+          if len(semapps) > 0:
+              semapp = choose_semapp(semapps)
+          else:
+              semapps = create_semapp(semapps)
+              semapp = choose_semapp(semapps)
+              
+          # beenden, falls auf cancel geklickt wird
+          if semapp is None:
+              exit(0)
+
+          # Main loop
+          while True:
+              barcode, count = get_user_input(semapp)
+
+              if barcode:
+                  move_to_semapp(barcode, semapp, count)
+              else:
+                  exit(0)
+    #+end_src
+
+* Zusammensetzen aller Teile
+  #+begin_src python -n :noweb yes :tangle semapp.py
+    <<imports>>
+
+    <<api>>
+
+    <<path-to-semapp-lst>>
+
+    <<create_semapp>>
+
+    <<remove_semapp>>
+
+    <<choose_semapp>>
+
+    <<get_user_input>>
+
+    <<move_to_semapp>>
+
+    <<main>>
+
+    if __name__ == "__main__":
+        main()
+  #+end_src
+
