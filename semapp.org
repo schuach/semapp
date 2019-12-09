@@ -155,23 +155,31 @@
     #+NAME: choose_semapp
     #+begin_src python
       def choose_semapp(semapps):
+          semapps = semapps
           msg = "Bitte wählen Sie aus, zu welchen Semesterhandapparat Sie Exemplare hinzufügen möchten."
           title = "SEMAPP"
-          choices = (["*** Neuen Semesterhandapparat anlegen ***"]
-                     + semapps
-                     + ["*** Einen Semesterhandapparat aus der Liste entfernen ***"])
 
-          choice = easygui.choicebox(msg, title, choices)
+          valid_choice = False
 
-          if choice == choices[0]:
-              choose_semapp(create_semapp(semapps))
-          elif choice == choices[-1]:
-              choose_semapp(remove_semapp(semapps))
-          else:
-              return choice
+          while valid_choice is False:
+              choices = (["*** Neuen Semesterhandapparat anlegen ***"]
+                        + semapps
+                        + ["*** Einen Semesterhandapparat aus der Liste entfernen ***"])
+
+              choice = easygui.choicebox(msg, title, choices)
+
+              if choice == choices[0]:
+                  semapps = create_semapp(semapps)
+              elif choice == choices[-1]:
+                  semapps = remove_semapp(semapps)
+              else:
+                  valid_choice = True
+
+          return choice
     #+end_src
 
-***** TODO Fix bug
+***** DONE Fix bug
+      CLOSED: [2019-12-09 Mo 17:26]
       Wenn Semapps hinzugefügt oder gelöscht werden, geht es nicht weiter, wenn
       dann tatsächlich ein Semapp zum bearbeiten gewählt wird.
 

@@ -71,20 +71,27 @@ def remove_semapp(semapps):
     return sorted(semapps)
 
 def choose_semapp(semapps):
+    semapps = semapps
     msg = "Bitte wählen Sie aus, zu welchen Semesterhandapparat Sie Exemplare hinzufügen möchten."
     title = "SEMAPP"
-    choices = (["*** Neuen Semesterhandapparat anlegen ***"]
-               + semapps
-               + ["*** Einen Semesterhandapparat aus der Liste entfernen ***"])
 
-    choice = easygui.choicebox(msg, title, choices)
+    valid_choice = False
 
-    if choice == choices[0]:
-        choose_semapp(create_semapp(semapps))
-    elif choice == choices[-1]:
-        choose_semapp(remove_semapp(semapps))
-    else:
-        return choice
+    while valid_choice is False:
+        choices = (["*** Neuen Semesterhandapparat anlegen ***"]
+                  + semapps
+                  + ["*** Einen Semesterhandapparat aus der Liste entfernen ***"])
+
+        choice = easygui.choicebox(msg, title, choices)
+
+        if choice == choices[0]:
+            semapps = create_semapp(semapps)
+        elif choice == choices[-1]:
+            semapps = remove_semapp(semapps)
+        else:
+            valid_choice = True
+
+    return choice
 
 def get_user_input(semapp):
     """Get Barcode and temporary call number from user."""
