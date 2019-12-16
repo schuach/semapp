@@ -153,18 +153,19 @@ def main():
         semapps = create_semapp(semapps)
         semapp = choose_semapp(semapps)
 
-    # beenden, falls auf cancel geklickt wird
-    if semapp is None:
-        exit(0)
 
     # Main loop
     while True:
+    # beenden, falls auf cancel geklickt wird
+        if semapp is None:
+            exit(0)
+
         barcode, count = get_user_input(semapp)
 
         if barcode:
             move_to_semapp(barcode, semapp, count)
         else:
-            exit(0)
+            semapp = choose_semapp(semapps)
 
 if __name__ == "__main__":
     main()
