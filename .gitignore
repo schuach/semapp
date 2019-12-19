@@ -1,6 +1,10 @@
 # Configuration
 config/
 
+# tex-files for documentation
+doc/auto
+*.tex
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

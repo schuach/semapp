@@ -18,7 +18,7 @@
   Um Exemplare in den Semesterhandapparat zu stellen, werden diese auf den
   temporären Standort "SEMAP" gestellt. Das reine umstellen des Standorts ist
   eine repetitive Tätigkeit, die mit diesem Programm beschleunigt werden soll.
-
+  
 *** Userinterface
     Die Benutzerin soll es mit einem möglichst einfachen Interface zu tun haben.
     Der Workflow ist dahingehend optimiert, dass immer mehrere Bücher zu einem
@@ -272,7 +272,7 @@
           else:
               semapps = create_semapp(semapps)
               semapp = choose_semapp(semapps)
-              
+
 
           # Main loop
           while True:
@@ -313,3 +313,83 @@
         main()
   #+end_src
 
+* SEMAPP -- Bedienungsanleitung
+  :PROPERTIES:
+  :EXPORT_FILE_NAME: doc/anleitung_semapp.pdf
+  :EXPORT_OPTIONS: toc:t num:t
+  :EXPORT_DATE: 2019-03-08
+  :END:
+
+*** Was tut dieses Programm und was nicht?
+***** Was tut das Programm?
+      Dieses Programm dient dazu, Exemplare mit weniger Handgriffen als in Alma
+      auf einen temporären Standort zu setzen und eine temporäre Signatur
+      einzutragen. Konkret handelt es sich um den Standort "SEMAP" an der
+      Hauptbibliothek und in die Signatur kommt der Name der/des Leherenden.
+***** Was tut das Programm *nicht*?
+      Derzeit ist das alles "fest verkabelt". D. h. es funktioniert nur für diesen
+      einen bestimmten Standort.
+
+      Das Programm ist nicht dazu gedacht, Bücher wieder aus dem SEMAP zu
+      entfernen. D. h. es setzt den temporären Standort, entfernt ihn aber nicht
+      wieder.
+*** Verwendung
+    Zuerst: Bitte machen Sie sich eine Verknüpfung zu dem Programm, sodass Sie
+    sich nicht immer durch das Netzlaufwerk klicken müssen.
+
+    Das folgende Beispiel geht davon aus, dass der gewünschte
+    Semesterhandapparat bereits in der Liste vorhanden ist. Für das Hinzufügen
+    oder das Löschen eines Semesterhandapparates aus der Auswahlliste siehe die
+    entsprechenden Abschnitte:
+
+    - [[Einen Semesterhandapparat zur Liste hinzufügen]]
+    - [[Einen Semesterhandapparat aus der Liste entfernen]]
+
+***** Ein einfaches Beispiel
+      
+      1. Starten Sie das Programm
+      2. Wählen Sie aus der Liste den Semesterhandapparat aus, zu dem Sie
+         Exemplare hinzufügen möchten:
+
+         [[file:doc/pic/auswahl_semapp.png]]
+      
+         - Wenn Sie hier auf "Cancel" klicken, verlassen Sie das Programm.
+      4. Es erscheint ein neues Fenster. Scannen Sie hier den Barcode ein.
+
+         [[file:doc/pic/get_user_input.png]]
+
+         Das Fenster schließt sich automatisch, das Exemplar wird im System
+         umgesetzt.
+      5. Das Eingabefenster öffnet sich erneut, um die Daten für das nächste
+         Exmeplar entegegenzunehmen. Wiederholen Sie Schritt 4 für jedes
+         Exemplar, das zum selben Semesterhandapparat gehört.
+
+
+         Wenn Sie hier auf "Cancel" klicken, kehren Sie zu Schritt 2 zurück, wo
+         Sie einen anderen Semesterhandapparat auswählen, oder das Programm
+         beenden können.
+
+***** Einen Semesterhandapparat zur Liste hinzufügen
+      Wenn der von Ihnen gewünschte Semesterhandapparat nicht in der
+      Auswahlliste aufscheint, können Sie ihn hinzufügen. 
+
+      - Wählen Sie dazu in der Liste die erste Zeile 
+        =*** Neuen Semesterhandapparat anlegen ***= aus:
+
+        [[file:doc/pic/auswahl_anlegen.png]]
+
+      - Geben Sie den Namen des neuen Apparates ein. Dieser Name ist
+        gleichzeitig die temporäre Signatur!
+
+        [[file:doc/pic/create_semapp.png]]
+
+      - Kontrollieren und bestätigen Sie im nächsten Schritt, ob Sie den Namen
+        richtig geschrieben haben.
+
+      - Der neue Name ist nun in der Auswahlliste vorhanden.
+
+***** Einen Semesterhandapparat aus der Liste entfernen
+      Wenn Sie einen Namen aus der Liste entfernen möchten, wählen Sie =***
+      Einen Semesterhandapparat aus der Liste entfernen ***=. Wählen Sie im
+      folgenden Fenster den Eintrag, den Sie entfernen möchten und bestätigen
+      Sie Ihre Entscheidung.
