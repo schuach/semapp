@@ -29,16 +29,14 @@
        Handapparaten. Dazu dient die Funktion [[choose_semapp]].
        1. Sollte der gewünschte Semesterhandapparat noch nicht verfügbar sein,
        kann die Benutzerin einen neuen Semapp anlegen ([[create_semapp]])
-    2. Die Benutzerin gibt die laufende Nummer innerhalb des
-       Semesterhandapparates ein (die an die temporäre Signatur angehängt wird)
-       und scannt den Barcode.
+    2. Die BenutzerIn scannt den Barcode.
     3. Nach dem Scannen erscheint erneut ein leeres Fenster für das nächste
        Exemplar in diesem Apparat.
-    4. Wird kein Barcode gescannt oder auf "Cancel" geklickt, wird gefragt, ob
-       ein neuer Apparat gewählt oder das Programm beendet werden soll.
-       1. Soll ein neuer Apparat gewählt werden, beginnt die Verarbeitung
-       wieder bei 1.
-       2. Soll beendet werden, wird das Programm beendet.
+    4. Wird kein Barcode gescannt oder auf "Cancel" geklickt, kommt man zurück
+       zur Auswahl der Apparate.
+       1. Wird ein neuer Apparat gewählt, beginnt die Verarbeitung
+          wieder bei 2.
+       2. Wird auf =Cancel= geklickt, wird das Programm beendet.
 
 * Script
 
@@ -356,14 +354,14 @@
          [[file:doc/pic/auswahl_semapp.png]]
       
          - Wenn Sie hier auf "Cancel" klicken, verlassen Sie das Programm.
-      4. Es erscheint ein neues Fenster. Scannen Sie hier den Barcode ein.
+      3. Es erscheint ein neues Fenster. Scannen Sie hier den Barcode ein.
 
          [[file:doc/pic/get_user_input.png]]
 
          Das Fenster schließt sich automatisch, das Exemplar wird im System
          umgesetzt.
-      5. Das Eingabefenster öffnet sich erneut, um die Daten für das nächste
-         Exemplar entegegenzunehmen. Wiederholen Sie Schritt 4 für jedes
+      4. Das Eingabefenster öffnet sich erneut, um die Daten für das nächste
+         Exemplar entegegenzunehmen. Wiederholen Sie Schritt 3 für jedes
          Exemplar, das zum selben Semesterhandapparat gehört.
 
 
