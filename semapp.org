@@ -326,6 +326,8 @@
       auf einen temporären Standort zu setzen und eine temporäre Signatur
       einzutragen. Konkret handelt es sich um den Standort "SEMAP" an der
       Hauptbibliothek und in die Signatur kommt der Name der/des Leherenden.
+      Dazu kommt nach " ; " noch die permanente Signatur. D. h. wenn es einen
+      Semesterhandapparat für "Müller" gibt steht dort z. B. =Müller ; I 536262=.
 ***** Was tut das Programm *nicht*?
       Derzeit ist das alles "fest verkabelt". D. h. es funktioniert nur für diesen
       einen bestimmten Standort.
@@ -342,10 +344,10 @@
     oder das Löschen eines Semesterhandapparates aus der Auswahlliste siehe die
     entsprechenden Abschnitte:
 
-    - [[Einen Semesterhandapparat zur Liste hinzufügen]]
-    - [[Einen Semesterhandapparat aus der Liste entfernen]]
+    - Hinzufügen: [[Einen Semesterhandapparat zur Liste hinzufügen]]
+    - Entfernen: [[Einen Semesterhandapparat aus der Liste entfernen]]
 
-***** Ein einfaches Beispiel
+***** Ablauf
       
       1. Starten Sie das Programm
       2. Wählen Sie aus der Liste den Semesterhandapparat aus, zu dem Sie
@@ -361,13 +363,23 @@
          Das Fenster schließt sich automatisch, das Exemplar wird im System
          umgesetzt.
       5. Das Eingabefenster öffnet sich erneut, um die Daten für das nächste
-         Exmeplar entegegenzunehmen. Wiederholen Sie Schritt 4 für jedes
+         Exemplar entegegenzunehmen. Wiederholen Sie Schritt 4 für jedes
          Exemplar, das zum selben Semesterhandapparat gehört.
 
 
          Wenn Sie hier auf "Cancel" klicken, kehren Sie zu Schritt 2 zurück, wo
          Sie einen anderen Semesterhandapparat auswählen, oder das Programm
          beenden können.
+
+***** Anwendung des Programms im Erwerbungsprozess
+
+      Das Programm kann auch verwendet werden, wenn ein Exemplar bestellt, aber
+      noch nicht eingelangt ist. Dazu wird einfach der Dummy-Barcode (DC-...)
+      des Exemplars in das Feld =Barcode= kopiert.
+
+      *WICHTIG:* Wenn das Exemplar zum Zeitpunkt der Anmendung des Programms
+      noch keine permanente Signatur hat, muss diese dann bei der Vergabe der
+      Signatur in der temporären Signatur nachgetragen werden!
 
 ***** Einen Semesterhandapparat zur Liste hinzufügen
       Wenn der von Ihnen gewünschte Semesterhandapparat nicht in der
