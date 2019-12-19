@@ -99,15 +99,13 @@ def get_user_input(semapp):
     msg = f'Exemplar zu Semapp "{semapp}" hinzufügen.'
 
     try:
-        count, barcode = easygui.multenterbox(msg=msg,
-                                                title="SEMAPP",
-                                                fields=["Laufende Nummer", "Barcode"])
+        barcode = easygui.multenterbox(msg=msg, title="SEMAPP", fields=["Barcode"])[0]
     except:
-        return None, None
+        return None
 
-    return barcode.strip(), count.strip()
+    return barcode.strip()
 
-def move_to_semapp(barcode, semapp, count):
+def move_to_semapp(barcode, semapp):
     try:
         item = session.get(barcode_api.format(barcode=urllib.parse.quote_plus(barcode)))
         item.raise_for_status()
@@ -125,8 +123,9 @@ def move_to_semapp(barcode, semapp, count):
     ij["holding_data"]["temp_library"] = {"value": "BHB", "desc": "Hauptbibliothek"}
     ij["holding_data"]["temp_location"] = {'value': 'SEMAP', 'desc': 'Semesterhandapparat'}
     ij["holding_data"]["temp_call_number_type"] = {'value': '8', 'desc': 'Other scheme'}
-    if count:
-        ij["holding_data"]["temp_call_number"] = semapp + f"/{count}"
+    perm_cn = ij["holding_data"]["call_number"]
+    if perm_cn:
+        ij["holding_data"]["temp_call_number"] = f"{semapp} ; {perm_cn}"
     else:
         ij["holding_data"]["temp_call_number"] = semapp
 
@@ -160,11 +159,12 @@ def main():
         if semapp is None:
             exit(0)
 
-        barcode, count = get_user_input(semapp)
+        barcode = get_user_input(semapp)
 
         if barcode:
-            move_to_semapp(barcode, semapp, count)
+            move_to_semapp(barcode, semapp)
         else:
+            # wenn auf cancel geklickt wird, wieder zurück zur Auswähl
             semapp = choose_semapp(semapps)
 
 if __name__ == "__main__":
