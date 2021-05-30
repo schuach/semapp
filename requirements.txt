@@ -2,7 +2,7 @@ backcall==0.1.0
 certifi==2019.9.11
 cffi==1.13.2
 chardet==3.0.4
-cryptography==3.2
+cryptography==3.3.2
 decorator==4.4.1
 easygui==0.98.1
 entrypoints==0.3
